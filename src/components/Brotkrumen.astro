@@ -1,0 +1,16 @@
+---
+// Brotkrumen-Navigation („Startseite › Ratgeber › …“).
+interface Props {
+  pfad: { text: string; href?: string }[];
+}
+const { pfad } = Astro.props;
+---
+<nav class="brotkrumen" aria-label="Brotkrumen-Navigation">
+  <ol>
+    {pfad.map((teil, i) => (
+      <li>
+        {teil.href && i < pfad.length - 1 ? <a href={teil.href}>{teil.text}</a> : <span aria-current="page">{teil.text}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>

@@ -1,0 +1,21 @@
+---
+// Infokasten für .astro-Seiten. In Markdown-Texten nutzt du stattdessen:
+//   > [!TIPP]
+//   > Text …
+interface Props {
+  typ?: 'tipp' | 'warnung' | 'wichtig' | 'info' | 'recht';
+  titel?: string;
+}
+const STANDARD = {
+  tipp: 'Tipp',
+  warnung: 'Achtung',
+  wichtig: 'Wichtig',
+  info: 'Gut zu wissen',
+  recht: 'Rechtlicher Hinweis',
+};
+const { typ = 'info', titel = STANDARD[typ] } = Astro.props;
+---
+<div class={`box box-${typ}`} role="note">
+  <p class="box-titel"><strong>{titel}</strong></p>
+  <slot />
+</div>

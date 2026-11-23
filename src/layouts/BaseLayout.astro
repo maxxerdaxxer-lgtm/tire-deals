@@ -1,0 +1,123 @@
+---
+// Grundgerüst jeder Seite: <head> mit SEO-Angaben, Kopf, Inhalt, Fuß.
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import { FOOTER_LINKS, NAVIGATION, SITE } from '../data/site';
+
+interface Props {
+  /** Seitentitel ohne Website-Namen. */
+  title: string;
+  description?: string;
+  /** "website" oder "article" (Open Graph). */
+  ogType?: 'website' | 'article';
+  /** Strukturierte Daten (JSON-LD), werden als <script type="application/ld+json"> ausgegeben. */
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+  /** Seitentitel ohne Zusatz „| Tire-Deals Reifenratgeber“ (z. B. Startseite). */
+  titelOhneZusatz?: boolean;
+  veroeffentlicht?: Date;
+  aktualisiert?: Date;
+}
+
+const {
+  title,
+  description = SITE.beschreibung,
+  ogType = 'website',
+  jsonLd = [],
+  noindex = false,
+  titelOhneZusatz = false,
+  veroeffentlicht,
+  aktualisiert,
+} = Astro.props;
+
+const seitenTitel = titelOhneZusatz ? title : `${title} | ${SITE.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogBild = new URL(SITE.ogBild, Astro.site).href;
+const aktuellerPfad = Astro.url.pathname;
+
+// "</script>" in Texten darf das JSON-LD nicht vorzeitig beenden.
+const alsJson = (daten: unknown) => JSON.stringify(daten).replace(/</g, '\\u003c');
+---
+<!doctype html>
+<html lang={SITE.sprache}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{seitenTitel}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0e5466" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    {/* Open Graph (Vorschau in sozialen Netzwerken und Messengern) */}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogBild} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE.name}: Reifen verständlich erklärt`} />
+    {ogType === 'article' && veroeffentlicht && (
+      <meta property="article:published_time" content={veroeffentlicht.toISOString()} />
+    )}
+    {ogType === 'article' && aktualisiert && (
+      <meta property="article:modified_time" content={aktualisiert.toISOString()} />
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {jsonLd.map((daten) => <script type="application/ld+json" set:html={alsJson(daten)} />)}
+  </head>
+  <body>
+    <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+    <header class="seitenkopf">
+      <div class="container seitenkopf-innen">
+        <Logo />
+        <nav aria-label="Hauptnavigation">
+          <ul class="hauptnav">
+            {NAVIGATION.map((punkt) => (
+              <li>
+                <a
+                  href={punkt.href}
+                  aria-current={aktuellerPfad.startsWith(punkt.href) ? 'page' : undefined}
+                >
+                  {punkt.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="inhalt" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="seitenfuss">
+      <div class="container">
+        <p class="fuss-marke"><strong>{SITE.name}</strong> – Reifen verständlich erklärt, für Deutschland und Österreich.</p>
+        <p class="fuss-hinweis">
+          Ohne Cookies, ohne Tracking, ohne externe Schriftarten. Alle Angaben ohne Gewähr – maßgeblich sind die
+          Fahrzeugpapiere, die Herstellerangaben und die geltenden Vorschriften.
+        </p>
+        <nav aria-label="Rechtliches">
+          <ul class="fuss-links">
+            {FOOTER_LINKS.map((link) => (
+              <li><a href={link.href}>{link.text}</a></li>
+            ))}
+          </ul>
+        </nav>
+        <p class="fuss-copy">© {new Date().getFullYear()} {SITE.kurzname}</p>
+      </div>
+    </footer>
+  </body>
+</html>

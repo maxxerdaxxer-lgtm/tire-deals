@@ -1,0 +1,86 @@
+# =====================================================================
+#  AFFILIATE-LINKS – zentrale Pflege
+# =====================================================================
+#
+#  Hier trägst du alle Partner-Links an EINER Stelle ein.
+#  Die Website holt sich die Links automatisch von hier.
+#
+#  So funktioniert ein Eintrag:
+#
+#    - id: reifenshop-1            # Kurzname, nur Kleinbuchstaben, Zahlen, Bindestriche.
+#                                  # Diesen Namen verwendest du in den Texten.
+#      name: "Name des Partners"   # Wird auf der Website angezeigt.
+#      url: ""                     # Dein Affiliate-Link (mit https://...).
+#                                  # LEER LASSEN = Link wird auf der Website NICHT angezeigt.
+#      beschreibung: "..."         # Kurzer, ehrlicher Satz (optional).
+#      kategorie: reifen           # reifen | vergleich | zubehoer
+#
+#  So verwendest du einen Link in einem Markdown-Text:
+#
+#    [Preise vergleichen](affiliate:vergleich-1)
+#
+#  Die Website macht daraus automatisch einen Link mit
+#  rel="sponsored nofollow" und dem Hinweis „Werbung/Affiliate-Link“.
+#
+#  Oder am Ende eines Ratgeber-Artikels als dezenter Kasten:
+#  Im Kopfbereich (Frontmatter) des Artikels:
+#
+#    affiliate:
+#      - reifenshop-1
+#      - vergleich-1
+#
+#  Solange "url" leer ist, erscheint der Link auf der Live-Seite nicht.
+#  In der lokalen Vorschau (npm run dev) siehst du stattdessen einen
+#  gestrichelten Platzhalter, damit du weißt, wo später etwas steht.
+# =====================================================================
+
+# --- Online-Reifenhändler ---------------------------------------------
+
+- id: reifenshop-1
+  name: "Online-Reifenhändler 1 (Platzhalter)"
+  url: ""
+  beschreibung: "Großes Sortiment, Lieferung auf Wunsch direkt zu einer Montagewerkstatt in deiner Nähe."
+  kategorie: reifen
+
+- id: reifenshop-2
+  name: "Online-Reifenhändler 2 (Platzhalter)"
+  url: ""
+  beschreibung: "Reifen und Kompletträder, mit Filter nach Fahrzeug und Reifengröße."
+  kategorie: reifen
+
+# --- Vergleichsportale ------------------------------------------------
+
+- id: vergleich-1
+  name: "Preisvergleich für Reifen (Platzhalter)"
+  url: ""
+  beschreibung: "Vergleicht Preise mehrerer Shops für dieselbe Reifengröße."
+  kategorie: vergleich
+
+- id: vergleich-2
+  name: "Vergleichsportal 2 (Platzhalter)"
+  url: ""
+  beschreibung: "Zweites Vergleichsportal, z. B. mit Montagepreisen von Werkstätten."
+  kategorie: vergleich
+
+# --- Zubehör (z. B. Amazon) -------------------------------------------
+# Hinweis: Wenn du Amazon-Links verwendest, ist auf der Seite
+# „Wie wir Geld verdienen“ bereits der von Amazon geforderte Satz
+# vorbereitet. Bitte dort prüfen.
+
+- id: amazon-profiltiefenmesser
+  name: "Profiltiefenmesser bei Amazon (Platzhalter)"
+  url: ""
+  beschreibung: "Kleines Messgerät für wenige Euro – genauer als der Münz-Trick."
+  kategorie: zubehoer
+
+- id: amazon-luftdruckpruefer
+  name: "Digitaler Reifendruckprüfer bei Amazon (Platzhalter)"
+  url: ""
+  beschreibung: "Zum Nachmessen des Luftdrucks an der Tankstelle oder zu Hause."
+  kategorie: zubehoer
+
+- id: amazon-reifentaschen
+  name: "Reifentaschen bei Amazon (Platzhalter)"
+  url: ""
+  beschreibung: "Schützen die Reifen bei der Lagerung im Keller oder in der Garage."
+  kategorie: zubehoer

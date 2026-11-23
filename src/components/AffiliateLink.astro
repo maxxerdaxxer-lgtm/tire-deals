@@ -1,0 +1,24 @@
+---
+// Einzelner Affiliate-Link mit sichtbarem Hinweis.
+// Verwendung:  <AffiliateLink id="vergleich-1">Preise vergleichen</AffiliateLink>
+// Ist in src/data/affiliate-links.yaml keine URL hinterlegt, erscheint auf
+// der Live-Seite nur der Text (ohne Link), in der Vorschau ein Platzhalter.
+import { AFFILIATE_HINWEIS, AFFILIATE_REL, findeAffiliateLink, istAktiv } from '../lib/affiliate.mjs';
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const link = findeAffiliateLink(id);
+if (!link) {
+  throw new Error(`Unbekannter Affiliate-Link "${id}". Bitte in src/data/affiliate-links.yaml anlegen.`);
+}
+const aktiv = istAktiv(link);
+---
+{aktiv ? (
+  <><a href={link.url} rel={AFFILIATE_REL} class="affiliate-link"><slot>{link.name}</slot></a>{' '}<span class="affiliate-hinweis">({AFFILIATE_HINWEIS})</span></>
+) : import.meta.env.DEV ? (
+  <span class="affiliate-platzhalter"><slot>{link.name}</slot> [Affiliate-Platzhalter: {id}]</span>
+) : (
+  <slot />
+)}

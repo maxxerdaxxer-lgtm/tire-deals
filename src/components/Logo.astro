@@ -1,0 +1,16 @@
+---
+// Kleines Reifen-Symbol + Name. Reines SVG, keine externen Dateien.
+import { SITE } from '../data/site';
+---
+<a class="logo" href="/" aria-label={`${SITE.name} – zur Startseite`}>
+  <svg class="logo-symbol" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+    <circle cx="16" cy="16" r="15" fill="currentColor" />
+    <circle cx="16" cy="16" r="12.4" fill="none" stroke="var(--farbe-hg)" stroke-width="2" stroke-dasharray="2.2 2.7" />
+    <circle cx="16" cy="16" r="7.5" fill="var(--farbe-hg)" />
+    <circle cx="16" cy="16" r="2.6" fill="currentColor" />
+  </svg>
+  <span class="logo-text">
+    <span class="logo-name">Tire-Deals</span>
+    <span class="logo-zusatz">Reifenratgeber</span>
+  </span>
+</a>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-labelledby="t d">
+  <title id="t">DOT-Nummer: Herstellungsdatum ablesen</title>
+  <desc id="d">Eine DOT-Nummer auf der Reifenflanke endet mit vier Ziffern in einem ovalen Feld, im Beispiel 2423. Die ersten beiden Ziffern 24 stehen für die Kalenderwoche 24, die letzten beiden Ziffern 23 für das Jahr 2023. Der Reifen wurde also im Juni 2023 hergestellt.</desc>
+  <style>
+    .band { fill: #263238; }
+    .dot { font: 700 40px ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, 'Liberation Mono', monospace; fill: #b0bec5; }
+    .datum { font: 700 52px ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, 'Liberation Mono', monospace; fill: #fff; }
+    .titel { font: 700 25px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; fill: #0a3b48; }
+    .text { font: 400 22px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; fill: #37474f; }
+    .klammer { fill: none; stroke: #0e5466; stroke-width: 4; stroke-linecap: round; }
+  </style>
+  <rect width="600" height="400" fill="#fff"/>
+  <rect class="band" x="16" y="20" width="568" height="120" rx="18"/>
+  <text class="dot" x="40" y="96">DOT XX XX</text>
+  <rect x="356" y="42" width="208" height="76" rx="38" fill="none" stroke="#fff" stroke-width="3"/>
+  <g class="datum" text-anchor="middle">
+    <text x="413" y="99">24</text>
+    <text x="507" y="99">23</text>
+  </g>
+  <path class="klammer" d="M380 160 v14 h66 v-14 M413 174 v26"/>
+  <path class="klammer" d="M474 160 v14 h66 v-14 M507 174 v26"/>
+  <text class="titel" x="300" y="236" text-anchor="end">Woche 24</text>
+  <text class="titel" x="320" y="236">Jahr 2023</text>
+  <line x1="24" y1="270" x2="576" y2="270" stroke="#d3dde0" stroke-width="1.5"/>
+  <text class="titel" x="24" y="314">Ergebnis: hergestellt im Juni 2023</text>
+  <text class="text" x="24" y="350">Die letzten vier Ziffern zählen: erst Woche,</text>
+  <text class="text" x="24" y="380">dann Jahr.</text>
+</svg>

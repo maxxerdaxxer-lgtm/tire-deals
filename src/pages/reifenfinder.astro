@@ -1,0 +1,341 @@
+---
+// Reifenfinder: ein paar Fragen, danach eine Empfehlung.
+// Die Auswertung läuft komplett im Browser. Es wird nichts gespeichert,
+// nichts gesendet, keine Cookies gesetzt.
+//
+// Texte der Fragen und Ergebnisse kannst du direkt hier im HTML ändern.
+// Die Entscheidungslogik steht im <script> ganz unten.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Brotkrumen from '../components/Brotkrumen.astro';
+import Infobox from '../components/Infobox.astro';
+import AffiliateLink from '../components/AffiliateLink.astro';
+import { brotkrumen } from '../lib/strukturierte-daten';
+
+const krumen = [{ text: 'Startseite', href: '/' }, { text: 'Reifenfinder' }];
+
+const fragen = [
+  {
+    name: 'fahrprofil',
+    frage: 'Wo bist du meistens unterwegs?',
+    antworten: [
+      { wert: 'stadt', text: 'Vor allem in der Stadt und auf kurzen Strecken' },
+      { wert: 'gemischt', text: 'Gemischt: Stadt, Landstraße, ab und zu Autobahn' },
+      { wert: 'autobahn', text: 'Viel auf der Autobahn und auf langen Strecken' },
+    ],
+  },
+  {
+    name: 'kilometer',
+    frage: 'Wie viele Kilometer fährst du ungefähr im Jahr?',
+    hilfe: 'Eine grobe Schätzung reicht. Tipp: Kilometerstand heute minus Kilometerstand vor einem Jahr.',
+    antworten: [
+      { wert: 'wenig', text: 'Unter 10.000 km' },
+      { wert: 'mittel', text: '10.000 bis 20.000 km' },
+      { wert: 'viel', text: 'Mehr als 20.000 km' },
+    ],
+  },
+  {
+    name: 'region',
+    frage: 'Wie ist der Winter dort, wo du wohnst und fährst?',
+    antworten: [
+      { wert: 'mild', text: 'Mild: Schnee und Glätte gibt es nur an wenigen Tagen (z. B. Flachland, Großstadt)' },
+      { wert: 'normal', text: 'Normal: Ab und zu Schnee und Glätte' },
+      { wert: 'streng', text: 'Streng: Regelmäßig Schnee, Berge oder Alpen – auch für den Skiurlaub' },
+    ],
+  },
+  {
+    name: 'winterfahren',
+    frage: 'Musst du auch bei Schnee und Glätte fahren?',
+    antworten: [
+      { wert: 'ja', text: 'Ja, ich muss fahren (z. B. zur Arbeit)' },
+      { wert: 'flexibel', text: 'Nein, bei Schnee kann ich das Auto meist stehen lassen' },
+    ],
+  },
+  {
+    name: 'fahrzeug',
+    frage: 'Was für ein Auto fährst du?',
+    antworten: [
+      { wert: 'klein', text: 'Kleinwagen oder Kompaktwagen' },
+      { wert: 'mittel', text: 'Mittelklasse, Kombi oder Van' },
+      { wert: 'schwer', text: 'SUV, Transporter oder Elektroauto' },
+    ],
+  },
+  {
+    name: 'budget',
+    frage: 'Was ist dir beim Preis am wichtigsten?',
+    antworten: [
+      { wert: 'guenstig', text: 'Möglichst günstig' },
+      { wert: 'ausgewogen', text: 'Gutes Preis-Leistungs-Verhältnis' },
+      { wert: 'qualitaet', text: 'Bestmögliche Sicherheit und Haltbarkeit, der Preis ist zweitrangig' },
+    ],
+  },
+];
+---
+<BaseLayout
+  title="Reifenfinder: Welcher Reifen passt zu mir?"
+  description="Sechs einfache Fragen zu Fahrprofil, Kilometern, Region und Budget – danach weißt du, ob Ganzjahres- oder Sommer- und Winterreifen zu dir passen."
+  jsonLd={[brotkrumen(krumen)]}
+>
+  <div class="container seite schmal">
+    <Brotkrumen pfad={krumen} />
+    <h1>Reifenfinder: Welcher Reifen passt zu mir?</h1>
+    <p class="einleitung">
+      Beantworte sechs kurze Fragen. Danach bekommst du eine Empfehlung, welcher Reifentyp und welche Preisklasse zu
+      deinem Fahralltag passen.
+    </p>
+
+    <Infobox typ="info" titel="Deine Daten bleiben bei dir">
+      <p>
+        Die Auswertung passiert nur in deinem Browser. Wir speichern nichts, senden nichts und setzen keine Cookies.
+        Wenn du die Seite schließt, sind deine Antworten weg.
+      </p>
+    </Infobox>
+
+    <noscript>
+      <Infobox typ="warnung" titel="JavaScript ist ausgeschaltet">
+        <p>
+          Der Reifenfinder braucht JavaScript, um deine Antworten auszuwerten. Alternativ hilft dir unsere
+          <a href="/ratgeber/sommer-winter-ganzjahresreifen/">Entscheidungshilfe Sommer-, Winter- oder Ganzjahresreifen</a>.
+        </p>
+      </Infobox>
+    </noscript>
+
+    <form class="finder" id="reifenfinder" action="#ergebnis">
+      {fragen.map((f, i) => (
+        <fieldset>
+          <legend>{i + 1}. {f.frage}</legend>
+          {f.hilfe && <p class="frage-hilfe">{f.hilfe}</p>}
+          {f.antworten.map((a) => (
+            <label>
+              <input type="radio" name={f.name} value={a.wert} required />
+              <span>{a.text}</span>
+            </label>
+          ))}
+        </fieldset>
+      ))}
+      <div class="button-reihe">
+        <button class="button" type="submit">Empfehlung anzeigen</button>
+        <button class="button button-zweit" type="reset">Antworten löschen</button>
+      </div>
+    </form>
+
+    <section class="ergebnis" id="ergebnis" tabindex="-1" aria-labelledby="ergebnis-titel" hidden>
+      <h2 id="ergebnis-titel">Deine Empfehlung</h2>
+
+      {/* Reifentyp */}
+      <div data-typ="ganzjahr" hidden>
+        <p class="ergebnis-typ">Ganzjahresreifen passen gut zu dir.</p>
+        <p>
+          Du fährst eher wenig, in einer Gegend mit milden Wintern, und kannst bei Schnee notfalls auf das Auto
+          verzichten. Gute Ganzjahresreifen sind für dich ein bequemer Kompromiss: kein Wechseln, keine Lagerung.
+        </p>
+      </div>
+      <div data-typ="grenzfall" hidden>
+        <p class="ergebnis-typ">Ganzjahresreifen sind möglich – Sommer- und Winterreifen sind die sicherere Wahl.</p>
+        <p>
+          Dein Fahrprofil liegt dazwischen. Ganzjahresreifen können passen, wenn dir Bequemlichkeit wichtig ist. Wer
+          das Maximum an Sicherheit im Sommer und Winter möchte, fährt mit zwei Reifensätzen besser.
+        </p>
+      </div>
+      <div data-typ="sommer-winter" hidden>
+        <p class="ergebnis-typ">Sommerreifen plus Winterreifen sind für dich die beste Wahl.</p>
+        <p>
+          Bei deinem Fahrprofil spielen spezialisierte Reifen ihre Stärken aus: Sommerreifen bremsen im Sommer kürzer
+          und halten länger, Winterreifen geben bei Schnee und Kälte deutlich mehr Halt.
+        </p>
+      </div>
+
+      <h3>Warum?</h3>
+      <ul id="gruende"></ul>
+
+      {/* Preisklasse */}
+      <h3>Welche Preisklasse?</h3>
+      <div data-klasse="premium" hidden>
+        <p><strong>Premium-Reifen lohnen sich für dich.</strong></p>
+        <p>
+          Wer viel fährt oder viel Wert auf Sicherheit legt, profitiert von den meist kürzeren Bremswegen und der oft
+          höheren Laufleistung. Der höhere Preis verteilt sich auf viele Kilometer.
+        </p>
+      </div>
+      <div data-klasse="mittel" hidden>
+        <p><strong>Ein guter Mittelklasse-Reifen ist für dich der beste Kompromiss.</strong></p>
+        <p>
+          Viele Mittelklasse-Reifen schneiden in Tests nur knapp hinter Premium-Reifen ab, kosten aber spürbar weniger.
+          Vergleiche vor allem die Werte für Nasshaftung auf dem EU-Reifenlabel.
+        </p>
+      </div>
+      <div data-klasse="budget" hidden>
+        <p><strong>Ein Budget-Reifen kann für dich reichen – aber nicht um jeden Preis.</strong></p>
+        <p>
+          Bei wenig Kilometern und überwiegend Stadtverkehr musst du nicht zum teuersten Reifen greifen. Achte aber auch
+          bei günstigen Reifen auf eine gute Nasshaftung (Klasse A oder B auf dem EU-Label).
+          {/* PRÜFEN: Empfehlung „Nasshaftung A oder B“ */}
+        </p>
+      </div>
+
+      {/* Zusatzhinweise */}
+      <div data-hinweis="alpine" hidden>
+        <Infobox typ="recht" titel="Achte auf das Alpine-Symbol">
+          <p>
+            In Deutschland gelten bei winterlichen Straßenverhältnissen nur Reifen mit dem Alpine-Symbol
+            (Bergpiktogramm mit Schneeflocke) als Winterreifen. Das gilt auch für Ganzjahresreifen.
+            {/* PRÜFEN: Alpine-Symbol-Pflicht in DE seit 01.10.2024 (§ 2 Abs. 3a StVO) */}
+          </p>
+        </Infobox>
+      </div>
+      <div data-hinweis="streng" hidden>
+        <Infobox typ="recht" titel="Fahrten in den Bergen und nach Österreich">
+          <p>
+            In Österreich gilt vom 1. November bis 15. April eine situative Winterausrüstungspflicht: Bei Schnee,
+            Schneematsch oder Eis brauchst du Winterreifen (mindestens 4 mm Profil) oder auf schneebedeckter Fahrbahn
+            Schneeketten auf den Antriebsrädern. Nimm für Bergfahrten Schneeketten mit.
+            {/* PRÜFEN: Österreich, Zeitraum 01.11.–15.04., 4 mm Mindestprofil für Winterreifen (§ 102 Abs. 8a KFG, § 4 Abs. 4 KDV) */}
+          </p>
+        </Infobox>
+      </div>
+      <div data-hinweis="schwer" hidden>
+        <Infobox typ="tipp" titel="Schweres Auto oder E-Auto">
+          <p>
+            Achte auf die richtige Tragfähigkeit (Lastindex) laut Fahrzeugpapieren. SUVs und E-Autos brauchen oft
+            verstärkte Reifen mit der Kennzeichnung „XL“ oder „HL“. Bei E-Autos lohnt sich ein Blick auf Rollwiderstand
+            und Abrollgeräusch – das spart Reichweite und Nerven.
+            {/* PRÜFEN: Kennzeichnungen XL / HL */}
+          </p>
+        </Infobox>
+      </div>
+
+      <h3>So geht es weiter</h3>
+      <ol>
+        <li><a href="/ratgeber/reifengroesse-ablesen/">Reifengröße ablesen</a> – damit du den passenden Reifen findest.</li>
+        <li><a href="/ratgeber/eu-reifenlabel/">EU-Reifenlabel verstehen</a> – damit du Reifen vergleichen kannst.</li>
+        <li><a href="/ratgeber/reifen-kaufen-montieren/">Kaufen und montieren</a> – online oder beim Händler.</li>
+      </ol>
+      <p class="meta">
+        Preise für deine Reifengröße kannst du zum Beispiel hier vergleichen:
+        <AffiliateLink id="vergleich-1">Reifenpreise vergleichen</AffiliateLink>
+      </p>
+
+      <p class="meta">
+        Diese Empfehlung ist eine Orientierung, keine Garantie. Maßgeblich sind die Angaben in deinen Fahrzeugpapieren
+        und die geltenden Vorschriften.
+      </p>
+      <p><button class="button button-zweit" type="button" id="neu-starten">Noch einmal starten</button></p>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // Entscheidungslogik des Reifenfinders. Läuft nur im Browser, speichert nichts.
+  type Antworten = Record<string, string>;
+
+  const form = document.getElementById('reifenfinder') as HTMLFormElement | null;
+  const ergebnis = document.getElementById('ergebnis') as HTMLElement | null;
+  const gruendeListe = document.getElementById('gruende') as HTMLUListElement | null;
+  const neuStarten = document.getElementById('neu-starten');
+
+  function reifentyp(a: Antworten) {
+    const gruende: string[] = [];
+
+    if (a.region === 'streng') {
+      gruende.push('Bei regelmäßigem Schnee oder Fahrten in die Berge sind echte Winterreifen klar im Vorteil.');
+      return { typ: 'sommer-winter', gruende };
+    }
+
+    // Punkte für Ganzjahresreifen: je höher, desto eher passen sie.
+    let punkte = 0;
+    if (a.region === 'mild') {
+      punkte += 2;
+      gruende.push('Bei milden Wintern brauchst du die volle Wintertauglichkeit nur selten.');
+    } else {
+      gruende.push('Bei normalen Wintern mit gelegentlich Schnee sind Winterreifen sicherer.');
+    }
+
+    if (a.kilometer === 'wenig') {
+      punkte += 2;
+      gruende.push('Bei unter 10.000 km im Jahr nutzen sich zwei Reifensätze kaum ab – sie altern eher, als dass sie verschleißen.');
+    } else if (a.kilometer === 'viel') {
+      punkte -= 2;
+      gruende.push('Wer viel fährt, nutzt Ganzjahresreifen schnell ab. Spezialisierte Reifen halten meist länger.');
+    }
+
+    if (a.fahrprofil === 'stadt') {
+      punkte += 1;
+      gruende.push('In der Stadt fährst du langsamer – hier fallen die Schwächen von Ganzjahresreifen weniger ins Gewicht.');
+    } else if (a.fahrprofil === 'autobahn') {
+      punkte -= 2;
+      gruende.push('Bei viel Autobahn und hohem Tempo bieten Sommerreifen im Sommer deutlich mehr Reserven.');
+    }
+
+    if (a.winterfahren === 'flexibel') {
+      punkte += 1;
+      gruende.push('Du kannst bei Schnee aufs Auto verzichten – das passt gut zu Ganzjahresreifen.');
+    } else {
+      punkte -= 1;
+      gruende.push('Wenn du auch bei Schnee fahren musst, zählt jeder Meter Bremsweg.');
+    }
+
+    const typ = punkte >= 3 ? 'ganzjahr' : punkte >= 1 ? 'grenzfall' : 'sommer-winter';
+    return { typ, gruende };
+  }
+
+  function preisklasse(a: Antworten) {
+    const vielGefordert = a.kilometer === 'viel' || a.fahrprofil === 'autobahn' || a.fahrzeug === 'schwer';
+    if (a.budget === 'qualitaet') return 'premium';
+    if (a.budget === 'guenstig') return vielGefordert ? 'mittel' : 'budget';
+    return a.kilometer === 'viel' && a.fahrprofil === 'autobahn' ? 'premium' : 'mittel';
+  }
+
+  function zeige(selector: string, wert: string) {
+    ergebnis?.querySelectorAll<HTMLElement>(`[${selector}]`).forEach((el) => {
+      el.hidden = el.getAttribute(selector) !== wert;
+    });
+  }
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!ergebnis || !gruendeListe) return;
+
+    const daten = new FormData(form);
+    const a: Antworten = {};
+    daten.forEach((wert, schluessel) => (a[schluessel] = String(wert)));
+
+    const { typ, gruende } = reifentyp(a);
+    const klasse = preisklasse(a);
+
+    zeige('data-typ', typ);
+    zeige('data-klasse', klasse);
+
+    if (a.budget === 'guenstig' && klasse === 'mittel') {
+      gruende.push('Du möchtest sparen – bei deinem Fahrprofil empfehlen wir trotzdem mindestens die Mittelklasse.');
+    }
+
+    gruendeListe.replaceChildren(
+      ...gruende.map((text) => {
+        const li = document.createElement('li');
+        li.textContent = text;
+        return li;
+      }),
+    );
+
+    const hinweise = new Set<string>(['alpine']);
+    if (a.region === 'streng') hinweise.add('streng');
+    if (a.fahrzeug === 'schwer') hinweise.add('schwer');
+    ergebnis.querySelectorAll<HTMLElement>('[data-hinweis]').forEach((el) => {
+      el.hidden = !hinweise.has(el.dataset.hinweis ?? '');
+    });
+
+    ergebnis.hidden = false;
+    ergebnis.focus();
+    ergebnis.scrollIntoView({ block: 'start' });
+  });
+
+  form?.addEventListener('reset', () => {
+    if (ergebnis) ergebnis.hidden = true;
+  });
+
+  neuStarten?.addEventListener('click', () => {
+    form?.reset();
+    if (ergebnis) ergebnis.hidden = true;
+    form?.querySelector('input')?.focus();
+    window.scrollTo({ top: 0 });
+  });
+</script>

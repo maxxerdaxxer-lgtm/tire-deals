@@ -1,0 +1,46 @@
+---
+// Dezenter Kasten „Wo kaufen?“ am Ende eines Artikels.
+// Zeigt nur Partner, für die in src/data/affiliate-links.yaml eine URL steht.
+import { AFFILIATE_HINWEIS, AFFILIATE_REL, findeAffiliateLink, istAktiv } from '../lib/affiliate.mjs';
+
+interface Props {
+  ids: string[];
+  titel?: string;
+}
+const { ids, titel = 'Wenn du jetzt vergleichen möchtest' } = Astro.props;
+
+const links = ids.map((id) => {
+  const link = findeAffiliateLink(id);
+  if (!link) throw new Error(`Unbekannter Affiliate-Link "${id}". Bitte in src/data/affiliate-links.yaml anlegen.`);
+  return link;
+});
+const aktive = links.filter(istAktiv);
+const zeigePlatzhalter = import.meta.env.DEV && aktive.length === 0 && links.length > 0;
+---
+{aktive.length > 0 && (
+  <aside class="affiliate-box" aria-labelledby="affiliate-box-titel">
+    <h2 id="affiliate-box-titel">{titel}</h2>
+    <p class="affiliate-kennzeichnung">
+      {AFFILIATE_HINWEIS}: Wenn du über diese Links kaufst, erhalten wir eventuell eine Provision. Für dich ändert sich
+      der Preis nicht. <a href="/wie-wir-geld-verdienen/">Mehr dazu</a>
+    </p>
+    <ul>
+      {aktive.map((link) => (
+        <li>
+          <a href={link.url} rel={AFFILIATE_REL} class="affiliate-link">{link.name}</a>{' '}
+          <span class="affiliate-hinweis">({AFFILIATE_HINWEIS})</span>
+          {link.beschreibung && <span class="beschreibung">{link.beschreibung}</span>}
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}
+{zeigePlatzhalter && (
+  <aside class="affiliate-box ist-platzhalter">
+    <h2>{titel}</h2>
+    <p class="affiliate-kennzeichnung">
+      Vorschau-Platzhalter (nur lokal sichtbar): Hier erscheinen später die Partner
+      <code>{ids.join(', ')}</code>, sobald in <code>src/data/affiliate-links.yaml</code> eine URL eingetragen ist.
+    </p>
+  </aside>
+)}

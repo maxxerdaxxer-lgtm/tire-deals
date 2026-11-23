@@ -1,0 +1,38 @@
+---
+// Einfache Inhaltsseiten aus src/content/seiten/*.md
+// (FAQ, Impressum, Datenschutz, Wie wir Geld verdienen …).
+// Die Datei „startseite.md“ wird auf der Startseite verwendet, nicht hier.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Brotkrumen from '../components/Brotkrumen.astro';
+import { datumDeutsch } from '../lib/ratgeber';
+import { brotkrumen, faq, fragenAusMarkdown } from '../lib/strukturierte-daten';
+
+export async function getStaticPaths() {
+  const seiten = await getCollection('seiten', (s) => s.id !== 'startseite');
+  return seiten.map((eintrag) => ({ params: { seite: eintrag.id }, props: { eintrag } }));
+}
+
+const { eintrag } = Astro.props;
+const { Content } = await render(eintrag);
+const d = eintrag.data;
+const istFaq = eintrag.id === 'faq';
+const krumen = [{ text: 'Startseite', href: '/' }, { text: d.title }];
+
+const jsonLd: Record<string, unknown>[] = [brotkrumen(krumen)];
+if (istFaq && eintrag.body) jsonLd.push(faq(fragenAusMarkdown(eintrag.body)));
+---
+<BaseLayout title={d.title} description={d.description} noindex={d.noindex} jsonLd={jsonLd}>
+  <article class:list={['container', 'seite', { faq: istFaq }]}>
+    <Brotkrumen pfad={krumen} />
+    <h1>{d.title}</h1>
+    {d.aktualisiert && (
+      <p class="meta">
+        Stand: <time datetime={d.aktualisiert.toISOString().slice(0, 10)}>{datumDeutsch(d.aktualisiert)}</time>
+      </p>
+    )}
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

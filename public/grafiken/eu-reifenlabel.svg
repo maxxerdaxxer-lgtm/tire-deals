@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 560" role="img" aria-labelledby="t d">
+  <title id="t">EU-Reifenlabel, vereinfachte Darstellung</title>
+  <desc id="d">Vereinfachte Darstellung des EU-Reifenlabels mit drei Hauptangaben: links Kraftstoffeffizienz mit Klassen A bis E, in der Mitte Nasshaftung mit Klassen A bis E, darunter das Rollgeräusch in Dezibel mit Klassen A bis C. Optional gibt es Symbole für Schnee- und Eisgriff sowie einen QR-Code.</desc>
+  <style>
+    .t { font: 700 22px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; fill: #0a3b48; }
+    .k { font: 700 18px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; fill: #fff; }
+    .s { font: 400 19px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; fill: #37474f; }
+    .gross { font: 700 34px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; fill: #0a3b48; }
+  </style>
+  <rect width="600" height="560" fill="#fff"/>
+  <rect x="10" y="10" width="580" height="540" rx="14" fill="none" stroke="#b0bec5" stroke-width="2"/>
+
+  <!-- Kraftstoffeffizienz -->
+  <text class="t" x="30" y="48">1 Rollwiderstand</text>
+  <text class="s" x="30" y="72">(Kraftstoff/Strom)</text>
+  <g>
+    <rect x="30" y="88"  width="110" height="30" fill="#2e7d32"/><text class="k" x="40" y="110">A</text>
+    <rect x="30" y="122" width="135" height="30" fill="#7cb342"/><text class="k" x="40" y="144">B</text>
+    <rect x="30" y="156" width="160" height="30" fill="#c0a000"/><text class="k" x="40" y="178">C</text>
+    <rect x="30" y="190" width="185" height="30" fill="#ef8f00"/><text class="k" x="40" y="212">D</text>
+    <rect x="30" y="224" width="210" height="30" fill="#d84315"/><text class="k" x="40" y="246">E</text>
+    <polygon points="250,122 280,122 280,152 250,152 238,137" fill="#263238"/>
+    <text class="k" x="259" y="144">B</text>
+  </g>
+
+  <!-- Nasshaftung -->
+  <text class="t" x="320" y="48">2 Nasshaftung</text>
+  <text class="s" x="320" y="72">(Bremsen bei Regen)</text>
+  <g>
+    <rect x="320" y="88"  width="110" height="30" fill="#1565c0"/><text class="k" x="330" y="110">A</text>
+    <rect x="320" y="122" width="135" height="30" fill="#1e88e5"/><text class="k" x="330" y="144">B</text>
+    <rect x="320" y="156" width="160" height="30" fill="#42a5f5"/><text class="k" x="330" y="178">C</text>
+    <rect x="320" y="190" width="185" height="30" fill="#64b5f6"/><text class="k" x="330" y="212">D</text>
+    <rect x="320" y="224" width="210" height="30" fill="#90caf9"/><text class="k" x="330" y="246">E</text>
+    <polygon points="452,88 482,88 482,118 452,118 440,103" fill="#263238"/>
+    <text class="k" x="461" y="110">A</text>
+  </g>
+
+  <line x1="30" y1="282" x2="570" y2="282" stroke="#d3dde0" stroke-width="1.5"/>
+
+  <!-- Rollgeräusch -->
+  <text class="t" x="30" y="322">3 Rollgeräusch</text>
+  <g transform="translate(30 340)">
+    <rect width="34" height="34" rx="4" fill="#263238"/>
+    <path d="M9 12 h6 l8 -7 v24 l-8 -7 h-6 z" fill="#fff"/>
+    <text class="gross" x="50" y="31">71 dB</text>
+    <rect x="168" y="2" width="30" height="30" rx="4" fill="#263238"/><text class="k" x="176" y="24">A</text>
+    <rect x="204" y="2" width="30" height="30" rx="4" fill="none" stroke="#263238" stroke-width="2"/><text class="k" x="212" y="24" style="fill:#263238">B</text>
+    <rect x="240" y="2" width="30" height="30" rx="4" fill="none" stroke="#263238" stroke-width="2"/><text class="k" x="248" y="24" style="fill:#263238">C</text>
+  </g>
+
+  <!-- Schnee / Eis -->
+  <text class="t" x="330" y="322">4 Schnee / Eis</text>
+  <g transform="translate(330 338)">
+    <path d="M0 40 L18 8 L28 24 L36 14 L56 40 Z" fill="none" stroke="#263238" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M28 30 v-12 M22 27 l12 -6 M22 21 l12 6" stroke="#263238" stroke-width="2"/>
+    <text class="s" x="66" y="20">Schneegriff</text>
+    <text class="s" x="66" y="42">(Alpine-Symbol)</text>
+  </g>
+
+  <line x1="30" y1="408" x2="570" y2="408" stroke="#d3dde0" stroke-width="1.5"/>
+  <text class="s" x="30" y="446">Beispiel: Rollwiderstand B, Nasshaftung A, 71 dB (Klasse A).</text>
+  <text class="s" x="30" y="476">Dazu kommen Hersteller, Reifenname, Größe und ein QR-Code</text>
+  <text class="s" x="30" y="504">zur EU-Produktdatenbank (EPREL).</text>
+  <text class="s" x="30" y="534" style="font-size:15px;fill:#607d8b">Vereinfachte Darstellung – nicht das Originallayout.</text>
+</svg>

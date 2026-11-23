@@ -1,0 +1,100 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AffiliateBox from '../../components/AffiliateBox.astro';
+import Brotkrumen from '../../components/Brotkrumen.astro';
+import { alleArtikel, artikelPfad, datumDeutsch } from '../../lib/ratgeber';
+import { artikel as artikelSchema, brotkrumen as brotkrumenSchema } from '../../lib/strukturierte-daten';
+
+export async function getStaticPaths() {
+  const artikel = await alleArtikel();
+  return artikel.map((eintrag, i) => ({
+    params: { id: eintrag.id },
+    props: { eintrag, naechster: artikel[i + 1], vorheriger: artikel[i - 1] },
+  }));
+}
+
+const { eintrag, naechster, vorheriger } = Astro.props;
+const { Content, headings } = await render(eintrag);
+const d = eintrag.data;
+const pfad = artikelPfad(eintrag.id);
+const inhaltsverzeichnis = headings.filter((h) => h.depth === 2);
+
+const krumen = [
+  { text: 'Startseite', href: '/' },
+  { text: 'Ratgeber', href: '/ratgeber/' },
+  { text: d.title },
+];
+---
+<BaseLayout
+  title={d.title}
+  description={d.description}
+  ogType="article"
+  veroeffentlicht={d.veroeffentlicht}
+  aktualisiert={d.aktualisiert}
+  jsonLd={[
+    artikelSchema({
+      titel: d.title,
+      beschreibung: d.description,
+      pfad,
+      veroeffentlicht: d.veroeffentlicht,
+      aktualisiert: d.aktualisiert,
+    }),
+    brotkrumenSchema(krumen),
+  ]}
+>
+  <article class="container seite">
+    <Brotkrumen pfad={krumen} />
+    <header>
+      {d.schritt ? (
+        <span class="schritt-label">Schritt {d.schritt} von 5: {d.schrittTitel}</span>
+      ) : (
+        <span class="schritt-label">Vorab-Check</span>
+      )}
+      <h1>{d.title}</h1>
+      <p class="einleitung">{d.kurz}</p>
+      <p class="meta">
+        Stand: <time datetime={(d.aktualisiert ?? d.veroeffentlicht).toISOString().slice(0, 10)}>
+          {datumDeutsch(d.aktualisiert ?? d.veroeffentlicht)}
+        </time>
+      </p>
+    </header>
+
+    {inhaltsverzeichnis.length > 2 && (
+      <nav class="toc" aria-labelledby="toc-titel">
+        <h2 id="toc-titel">Auf dieser Seite</h2>
+        <ol>
+          {inhaltsverzeichnis.map((h) => (
+            <li><a href={`#${h.slug}`}>{h.text}</a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <AffiliateBox ids={d.affiliate} />
+
+    {naechster && (
+      <nav class="weiter" aria-label="Nächster Artikel">
+        <p class="weiter-label">
+          {naechster.data.schritt ? `Weiter mit Schritt ${naechster.data.schritt}:` : 'Weiter mit:'}
+        </p>
+        <p><a href={artikelPfad(naechster.id)}>{naechster.data.title} →</a></p>
+      </nav>
+    )}
+    {!naechster && (
+      <nav class="weiter" aria-label="Wie geht es weiter?">
+        <p class="weiter-label">Geschafft! Noch unsicher?</p>
+        <p><a href="/reifenfinder/">Zum Reifenfinder →</a></p>
+      </nav>
+    )}
+    {vorheriger && (
+      <p class="meta" style="margin-top:1rem">
+        Zurück: <a href={artikelPfad(vorheriger.id)}>{vorheriger.data.title}</a>
+      </p>
+    )}
+  </article>
+</BaseLayout>

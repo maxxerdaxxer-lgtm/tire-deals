@@ -1,0 +1,72 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { alleArtikel, artikelPfad } from '../lib/ratgeber';
+import { website } from '../lib/strukturierte-daten';
+
+// Texte der Startseite: src/content/seiten/startseite.md
+const startseite = await getEntry('seiten', 'startseite');
+if (!startseite) throw new Error('src/content/seiten/startseite.md fehlt.');
+const { Content } = await render(startseite);
+
+const artikel = await alleArtikel();
+const vorab = artikel.filter((a) => !a.data.schritt);
+const schritte = artikel.filter((a) => a.data.schritt);
+---
+<BaseLayout
+  title={startseite.data.title}
+  description={startseite.data.description}
+  titelOhneZusatz
+  jsonLd={[website()]}
+>
+  <section class="hero" aria-labelledby="hero-titel">
+    <div class="container">
+      <h1 id="hero-titel">Den richtigen Reifen finden – einfach erklärt</h1>
+      {startseite.data.einleitung && <p class="einleitung">{startseite.data.einleitung}</p>}
+      <div class="button-reihe">
+        <a class="button" href="#schritte">In 5 Schritten zum richtigen Reifen</a>
+        <a class="button button-zweit" href="/reifenfinder/">Reifenfinder starten</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container abschnitt" id="schritte" aria-labelledby="schritte-titel">
+    <h2 id="schritte-titel" style="margin-top:0">In 5 Schritten zum richtigen Reifen</h2>
+    <p class="schmal">
+      Du musst kein Auto-Profi sein. Lies die Schritte der Reihe nach – jeder dauert nur ein paar Minuten.
+    </p>
+    <ol class="schritte">
+      {vorab.map((a) => (
+        <li class="karte karte-vorab">
+          <span class="schritt-nr" aria-hidden="true">Vorab</span>
+          <h3><a href={artikelPfad(a.id)}><span class="visually-hidden">Vorab-Check: </span>{a.data.schrittTitel ?? a.data.title}</a></h3>
+          <p>{a.data.kurz}</p>
+        </li>
+      ))}
+      {schritte.map((a) => (
+        <li class="karte">
+          <span class="schritt-nr" aria-hidden="true">{a.data.schritt}</span>
+          <h3><a href={artikelPfad(a.id)}><span class="visually-hidden">Schritt {a.data.schritt}: </span>{a.data.schrittTitel ?? a.data.title}</a></h3>
+          <p>{a.data.kurz}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="container abschnitt" aria-labelledby="finder-titel">
+    <div class="karte" style="max-width:var(--breite-text)">
+      <h2 id="finder-titel" style="margin-top:0">Keine Zeit für alles? Der Reifenfinder hilft.</h2>
+      <p>
+        Beantworte sechs kurze Fragen zu deinem Fahralltag. Du bekommst eine Empfehlung, welcher Reifentyp und welche
+        Preisklasse zu dir passen. Deine Antworten bleiben in deinem Browser und werden nicht gespeichert.
+      </p>
+      <p style="margin-top:1rem"><a class="button" href="/reifenfinder/">Zum Reifenfinder</a></p>
+    </div>
+  </section>
+
+  <section class="container abschnitt">
+    <div class="prose">
+      <Content />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Brotkrumen from '../../components/Brotkrumen.astro';
+import { alleArtikel, artikelPfad } from '../../lib/ratgeber';
+import { brotkrumen } from '../../lib/strukturierte-daten';
+
+const artikel = await alleArtikel();
+const krumen = [{ text: 'Startseite', href: '/' }, { text: 'Ratgeber' }];
+---
+<BaseLayout
+  title="Reifen-Ratgeber: alle Artikel im Überblick"
+  description="Alle Ratgeber-Artikel auf einen Blick: Reifengröße, Sommer- oder Winterreifen, EU-Label, Profiltiefe, Preisklassen und Reifenkauf – einfach erklärt."
+  jsonLd={[brotkrumen(krumen)]}
+>
+  <div class="container seite">
+    <Brotkrumen pfad={krumen} />
+    <h1>Ratgeber: Reifen einfach erklärt</h1>
+    <p class="einleitung">
+      Am besten liest du die Artikel der Reihe nach. Jeder Schritt baut auf dem vorherigen auf – du kannst aber
+      auch direkt zu deiner Frage springen.
+    </p>
+    <ul class="artikel-liste">
+      {artikel.map((a) => (
+        <li class:list={['karte', { 'karte-vorab': !a.data.schritt }]}>
+          <span class="schritt-nr" aria-hidden="true">{a.data.schritt ?? 'Vorab'}</span>
+          <h2>
+            <span class="visually-hidden">{a.data.schritt ? `Schritt ${a.data.schritt}: ` : 'Vorab-Check: '}</span>
+            <a href={artikelPfad(a.id)}>{a.data.title}</a>
+          </h2>
+          <p>{a.data.kurz}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>

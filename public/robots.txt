@@ -1,0 +1,5 @@
+# robots.txt für tire-deals.com
+User-agent: *
+Allow: /
+
+Sitemap: https://tire-deals.com/sitemap.xml
