@@ -6,6 +6,7 @@ schritt: 5
 schrittTitel: "Kaufen und montieren"
 reihenfolge: 5
 veroeffentlicht: 2026-11-23
+affiliateTitel: "Reifen online kaufen oder Preise vergleichen"
 affiliate:
   - reifenshop-1
   - reifenshop-2

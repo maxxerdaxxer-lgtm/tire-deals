@@ -13,6 +13,7 @@ import { brotkrumen } from '../lib/strukturierte-daten';
 
 const krumen = [{ text: 'Startseite', href: '/' }, { text: 'Reifenfinder' }];
 
+// PRÜFEN: Kilometer-Schwellen (10.000 / 20.000 km) und die Zuordnung der Antworten zu den Empfehlungen
 const fragen = [
   {
     name: 'fahrprofil',
@@ -162,6 +163,10 @@ const fragen = [
           Viele Mittelklasse-Reifen schneiden in Tests nur knapp hinter Premium-Reifen ab, kosten aber spürbar weniger.
           Vergleiche vor allem die Werte für Nasshaftung auf dem EU-Reifenlabel.
         </p>
+        <p data-hinweis="sparen" hidden>
+          Du möchtest sparen – verständlich. Weil du viel fährst, oft auf der Autobahn bist oder ein schweres Auto hast,
+          empfehlen wir dir trotzdem mindestens einen guten Mittelklasse-Reifen.
+        </p>
       </div>
       <div data-klasse="budget" hidden>
         <p><strong>Ein Budget-Reifen kann für dich reichen – aber nicht um jeden Preis.</strong></p>
@@ -232,6 +237,7 @@ const fragen = [
   const gruendeListe = document.getElementById('gruende') as HTMLUListElement | null;
   const neuStarten = document.getElementById('neu-starten');
 
+  // PRÜFEN: Punktevergabe und Schwellenwerte der Empfehlung (redaktionelle Einschätzung)
   function reifentyp(a: Antworten) {
     const gruende: string[] = [];
 
@@ -304,10 +310,6 @@ const fragen = [
     zeige('data-typ', typ);
     zeige('data-klasse', klasse);
 
-    if (a.budget === 'guenstig' && klasse === 'mittel') {
-      gruende.push('Du möchtest sparen – bei deinem Fahrprofil empfehlen wir trotzdem mindestens die Mittelklasse.');
-    }
-
     gruendeListe.replaceChildren(
       ...gruende.map((text) => {
         const li = document.createElement('li');
@@ -319,6 +321,7 @@ const fragen = [
     const hinweise = new Set<string>(['alpine']);
     if (a.region === 'streng') hinweise.add('streng');
     if (a.fahrzeug === 'schwer') hinweise.add('schwer');
+    if (a.budget === 'guenstig' && klasse === 'mittel') hinweise.add('sparen');
     ergebnis.querySelectorAll<HTMLElement>('[data-hinweis]').forEach((el) => {
       el.hidden = !hinweise.has(el.dataset.hinweis ?? '');
     });

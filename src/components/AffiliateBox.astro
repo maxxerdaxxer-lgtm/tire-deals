@@ -5,7 +5,7 @@ import { AFFILIATE_HINWEIS, AFFILIATE_REL, findeAffiliateLink, istAktiv } from '
 
 interface Props {
   ids: string[];
-  titel?: string;
+  titel?: string | undefined;
 }
 const { ids, titel = 'Wenn du jetzt vergleichen möchtest' } = Astro.props;
 

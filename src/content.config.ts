@@ -24,6 +24,8 @@ const ratgeber = defineCollection({
     aktualisiert: z.coerce.date().optional(),
     /** IDs aus src/data/affiliate-links.yaml für den dezenten Kasten am Ende. */
     affiliate: z.array(z.string()).default([]),
+    /** Überschrift des Affiliate-Kastens (optional). */
+    affiliateTitel: z.string().optional(),
   }),
 });
 

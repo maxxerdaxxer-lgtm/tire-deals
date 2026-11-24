@@ -50,7 +50,7 @@ Den Lastindex und den Geschwindigkeitsindex musst du nicht auswendig kennen. Hie
 | 97 | 730 kg |
 | 100 | 800 kg |
 
-| Geschwindigkeitsindex | Höchstgeschwindigkeit |
+| Kennbuchstabe | Höchsttempo |
 | --- | --- |
 | Q | 160 km/h |
 | T | 190 km/h |

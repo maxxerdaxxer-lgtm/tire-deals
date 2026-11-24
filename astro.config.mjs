@@ -1,5 +1,7 @@
 // Astro-Konfiguration für tire-deals.com
 // Doku: https://docs.astro.build/de/reference/configuration-reference/
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import {
@@ -7,6 +9,13 @@ import {
   remarkInfokaesten,
   remarkKommentareEntfernen,
 } from './src/lib/remark-plugins.mjs';
+
+// Prüfsumme der Affiliate-Datei: Ändert sich die Datei, rendert Astro alle
+// Markdown-Texte neu (sonst blieben alte Links im Zwischenspeicher hängen).
+const affiliatePruefsumme = createHash('sha256')
+  .update(readFileSync(new URL('./src/data/affiliate-links.yaml', import.meta.url)))
+  .digest('hex')
+  .slice(0, 16);
 
 export default defineConfig({
   // Die endgültige Adresse der Website (für Canonical-Links, Sitemap, Open Graph).
@@ -24,7 +33,11 @@ export default defineConfig({
       // Typografische Anführungszeichen schreiben wir direkt im Text („…“),
       // damit keine englischen Anführungszeichen entstehen.
       smartypants: false,
-      remarkPlugins: [remarkKommentareEntfernen, remarkInfokaesten, remarkAffiliateLinks],
+      remarkPlugins: [
+        remarkKommentareEntfernen,
+        remarkInfokaesten,
+        [remarkAffiliateLinks, { pruefsumme: affiliatePruefsumme }],
+      ],
     }),
   },
 });

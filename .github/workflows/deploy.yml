@@ -1,0 +1,56 @@
+# Baut die Website mit Astro und veröffentlicht sie auf GitHub Pages.
+# Läuft automatisch bei jedem Push auf den Branch "main"
+# und kann unter "Actions" auch von Hand gestartet werden.
+name: Website veröffentlichen
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Immer nur eine Veröffentlichung gleichzeitig; laufende nicht abbrechen.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Website bauen
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v7
+
+      - name: Node.js einrichten
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Website bauen
+        run: npm run build
+
+      - name: Ergebnis für GitHub Pages hochladen
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: Auf GitHub Pages veröffentlichen
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v5

@@ -13,7 +13,7 @@ export const SITE = {
   /** Wird als „Autor“ in den strukturierten Daten genannt. */
   redaktion: 'Redaktion Tire-Deals Reifenratgeber',
   /** Standard-Vorschaubild für soziale Netzwerke (liegt in /public). */
-  ogBild: '/og-image.png',
+  ogBild: '/og-image.jpg',
 } as const;
 
 /** Hauptnavigation im Kopfbereich. */

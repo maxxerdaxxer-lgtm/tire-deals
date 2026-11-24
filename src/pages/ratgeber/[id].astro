@@ -75,7 +75,7 @@ const krumen = [
       <Content />
     </div>
 
-    <AffiliateBox ids={d.affiliate} />
+    <AffiliateBox ids={d.affiliate} titel={d.affiliateTitel} />
 
     {naechster && (
       <nav class="weiter" aria-label="Nächster Artikel">
@@ -92,7 +92,7 @@ const krumen = [
       </nav>
     )}
     {vorheriger && (
-      <p class="meta" style="margin-top:1rem">
+      <p class="meta zurueck">
         Zurück: <a href={artikelPfad(vorheriger.id)}>{vorheriger.data.title}</a>
       </p>
     )}

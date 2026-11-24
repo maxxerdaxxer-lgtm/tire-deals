@@ -1,10 +1,11 @@
 ---
 title: "Profiltiefe und Reifenalter prüfen: So geht der Check"
 description: "Wie viel Profil ist Pflicht und wie alt dürfen Reifen sein? So misst du die Profiltiefe, liest die DOT-Nummer und erkennst, wann neue Reifen fällig sind."
-kurz: "Brauchst du überhaupt neue Reifen? Mit zwei einfachen Checks – Profiltiefe und Alter – weißt du es in fünf Minuten."
+kurz: "Mit zwei einfachen Checks – Profiltiefe und Reifenalter – weißt du in fünf Minuten, ob neue Reifen fällig sind."
 schrittTitel: "Brauchst du neue Reifen?"
 reihenfolge: 0
 veroeffentlicht: 2026-11-23
+affiliateTitel: "Praktische Helfer für den Reifen-Check"
 affiliate:
   - amazon-profiltiefenmesser
   - amazon-luftdruckpruefer

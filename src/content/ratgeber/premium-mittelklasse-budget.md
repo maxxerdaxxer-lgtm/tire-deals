@@ -6,6 +6,7 @@ schritt: 4
 schrittTitel: "Preisklasse wählen"
 reihenfolge: 4
 veroeffentlicht: 2026-11-23
+affiliateTitel: "Preise für deine Reifengröße vergleichen"
 affiliate:
   - vergleich-1
   - vergleich-2
